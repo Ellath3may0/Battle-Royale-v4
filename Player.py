@@ -1,4 +1,5 @@
-import random
+from random import randint
+import Item
 
 
 class Player:
@@ -21,13 +22,13 @@ class Player:
     # This will be used in tandem with speed and intellect to determine the character's combat proficiency
     # Recommended 10 for god killers, and 1 for nitwits
     strength    = -1
-    # Strenth modifier
+    # Strength modifier
     strengthMod = 0
 
     # Intellect stat that determines the character's decision-making proficiency
     # Used with speed and strength to determine the character's combat proficiency
     # Improves search efficiency
-    # Recommended 10 for Omnitient, 1 for idiot
+    # Recommended 10 for omniscient, 1 for idiot
     intellect   = -1
     # Intellect modifier
     intelMod    = 0
@@ -43,6 +44,18 @@ class Player:
 
     # Character initialisation
     def __init__(self, name: str, maxHealth: int, speed: int, strength: int, intellect: int):
+
+        # Check for invalid character data
+        if (
+            name == "" or
+            maxHealth   < 1 or maxHealth    > 100 or
+            speed       < 1 or maxHealth    > 10 or
+            strength    < 1 or strength     > 10 or
+            intellect   < 1 or intellect    > 10
+        ):
+            print("There was an issue interpreting character data. Please ensure you have properly formatted your data"
+                  "sheet.")
+
         # Apply character information
         self.name       = name
         self.maxHealth  = maxHealth
@@ -54,14 +67,35 @@ class Player:
         self.gameHealth = maxHealth
 
         # User feedback
-        print(name + ' has been successfully initialised.')
+        print('Player ' + name + ' has been successfully initialised')
 
     # Update modifiers based on backpack contents
+    # TODO: Implement this functionality when picking up or discarding an item
     def backpackCheck(self):
-        self.speedMod, self.strengthMod, self.intelMod = 0
+        self.speedMod, self.strengthMod, self.intelMod = 0, 0, 0
 
         for item in self.backpack:
             item.apply(self)
 
+
+    # Add an item to the backpack, and apply its effects to the character's modifiers
+    def addItem(self, item: Item):
+        self.backpack.append(item)
+        item.apply(self)
+
+
+    # Remove an item from the backpack, and its effects on the character's modifiers
+    def removeItem(self, item: int):
+        self.backpack.pop(item).discard()
+
+
+    # Randomised intel call used for decision-making
     def intelCall(self) -> bool:
-        return random.random() * 100 + 1 < self.intellect + self.intelMod
+        return randint(1, 10) < self.intellect + self.intelMod
+
+
+    # Calculate the character's combat proficiency
+    def combatProficiency(self):
+        return ((self.intellect + self.intelMod)    * 2 +
+                (self.speed     + self.speedMod)    * 3 +
+                (self.strength  + self.strengthMod) * 5)
