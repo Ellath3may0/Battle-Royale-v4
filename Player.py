@@ -33,14 +33,15 @@ class Player:
     # Intellect modifier
     intelMod    = 0
 
-    # Gameplay variables
-    location    = 00
+    # Current in-game health
     gameHealth  = -1
 
     # Backpack
     # This list stores all the items the character collects along their journey
     # Maximum items in backpack is 10
-    backpack = []
+    backpack    = []
+    # a part of the backpack specifically for consumables. Does not increase backpack capacity
+    consumables = []
 
     # Character initialisation
     def __init__(self, name: str, maxHealth: int, speed: int, strength: int, intellect: int):
@@ -55,6 +56,8 @@ class Player:
         ):
             print("There was an issue interpreting character data. Please ensure you have properly formatted your data"
                   "sheet.")
+
+            exit(0)
 
         # Apply character information
         self.name       = name
@@ -95,7 +98,7 @@ class Player:
 
 
     # Calculate the character's combat proficiency
-    def combatProficiency(self):
-        return ((self.intellect + self.intelMod)    * 2 +
+    def combatProficiency(self) -> int:
+        return ((self.intellect + self.intelMod)    * 3 +
                 (self.speed     + self.speedMod)    * 3 +
-                (self.strength  + self.strengthMod) * 5)
+                (self.strength  + self.strengthMod) * 4)
