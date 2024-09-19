@@ -56,3 +56,10 @@ class Config:
                 else:
                     print("!== Input invalid. Please try again. ==!")
                     continue
+
+    def copy(self):
+        temp = Config("copy")
+        temp.mode = self.mode
+        temp.locationsEnabled = self.locationsEnabled
+        temp.itemsEnabled = self.itemsEnabled
+        return temp
